@@ -226,6 +226,11 @@ h1{font-size:clamp(2rem,4.3vw,3rem);letter-spacing:-.06em;line-height:1.06}.hero
 dialog{width:min(92vw,510px);max-height:90dvh;border:1px solid var(--line);border-radius:14px;background:var(--surface);color:var(--text);padding:0;box-shadow:0 20px 80px #07132750}dialog::backdrop{background:#0713269c}.dialog-head{padding:16px 19px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:10px}.dialog-head h2{font-size:1.2rem}.dialog-body{padding:18px 19px;display:grid;gap:14px}.dialog-body p,.hint{color:var(--muted);font-size:.875rem}
 label.field{display:grid;gap:5px;font-size:.875rem;font-weight:700}label.field input,label.field select{width:100%;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--text);padding:9px;min-height:44px;font-size:1rem}.form-actions{justify-content:flex-end}.danger{color:#aa2641}[data-theme=dark] .danger{color:#ff9eb0}#deleteLink{margin-right:auto}.feedback{min-height:1em;color:#ac2743;font-size:.875rem}.setting-group{display:grid;gap:8px;border-top:1px solid var(--line);padding-top:12px}.setting-group h3{margin:0;font-size:1rem}
 #notice{position:fixed;z-index:2;bottom:20px;right:20px;max-width:min(90vw,450px);background:#14294b;color:white;border-radius:9px;padding:11px 15px;box-shadow:0 5px 24px #101d3540}#notice:empty{display:none}
+.footer{flex-wrap:wrap;justify-content:space-between;gap:8px 16px}
+.footer-note{display:inline-flex;align-items:center;gap:7px}
+.footer-terms{border:0;border-radius:6px;background:transparent;color:var(--accent);padding:8px 4px;min-height:44px;font:inherit;font-weight:700;text-align:left}
+.footer-terms:hover,.policy a:hover{text-decoration-thickness:2px}.footer-terms,.policy a{text-decoration:underline;text-underline-offset:3px}
+#policy{width:min(92vw,660px)}.policy section{display:grid;gap:5px}.policy h3{font-size:1rem;margin:0}.policy p{line-height:1.55}.policy a{color:var(--accent)}
 .mobile-nav{display:none}
 @media(max-width:900px){.shell{grid-template-columns:202px minmax(0,1fr)}}
 @media(max-width:720px){.shell{display:block}.sidebar{display:none}.mobile-nav{display:flex;gap:7px;overflow:auto;padding:0 0 10px;margin-bottom:9px}.mobile-nav button{white-space:nowrap}.mobile-nav button[aria-pressed=true]{background:var(--soft);border-color:var(--accent);color:var(--accent)}.workspace{padding-top:17px}.hero{min-height:183px}.hero::after{background:linear-gradient(90deg,#10264a 0%,#10264ae5 58%,#10264a55 100%)}.search input{width:100%}}
@@ -257,7 +262,10 @@ label.field{display:grid;gap:5px;font-size:.875rem;font-weight:700}label.field i
         <nav id="mobileNav" class="mobile-nav" aria-label="App categories"></nav>
         <div id="groups" class="groups"></div>
       </section>
-      <footer class="footer"><span data-icon="lock"></span>Personal workspace · Settings and links stay in this browser</footer>
+      <footer class="footer">
+        <span class="footer-note"><span data-icon="lock"></span>Independent launcher · Settings and links stored in this browser</span>
+        <button type="button" class="footer-terms" id="openPolicy">Terms, privacy &amp; safety</button>
+      </footer>
     </div>
   </main>
 </div>
@@ -265,7 +273,7 @@ label.field{display:grid;gap:5px;font-size:.875rem;font-weight:700}label.field i
   <div class="dialog-head"><h2 id="linkTitle">Add link</h2><button type="button" class="icon-btn" data-close aria-label="Close"><span data-icon="close"></span></button></div>
   <form id="linkForm" class="dialog-body">
     <label class="field">App or form name<input name="name" required maxlength="160" autofocus></label>
-    <label class="field">URL<input name="url" type="text" inputmode="url" spellcheck="false" required maxlength="8192" placeholder="https://… or app://…"><span class="hint">Use # as a placeholder.</span></label>
+    <label class="field">URL<input name="url" type="text" inputmode="url" spellcheck="false" required maxlength="8192" placeholder="https://… or app://…"><span class="hint">Use # as a placeholder. Verify the destination and keep credentials and access tokens out of URLs.</span></label>
     <label class="field">Category<input name="category" list="categories" required maxlength="80" placeholder="Select or enter a category"><datalist id="categories"></datalist></label>
     <label class="field">Icon<input name="icon" maxlength="64" placeholder="Example: ✈️ or fa-plane"><span class="hint">Use an emoji or a Font Awesome Free class such as fa-plane or fab fa-github. Leave blank for initials.</span></label>
     <label class="field" id="iconChoices">Built-in icons<select id="iconPreset"></select></label>
@@ -279,7 +287,40 @@ label.field{display:grid;gap:5px;font-size:.875rem;font-weight:700}label.field i
     <label class="field">Appearance<select id="theme"><option value="light">Light</option><option value="dark">Dark</option></select></label>
     <label class="field">Grid size<select id="density"><option value="compact">Compact</option><option value="comfortable">Comfortable</option><option value="large">Large</option></select></label>
     <label class="field">App order<select id="order"><option value="saved">Saved order</option><option value="az">Name A–Z</option><option value="za">Name Z–A</option></select></label>
-    <section class="setting-group"><h3>Import and export</h3><p>Download your links and layout as JSON, then import the file on another device. Import replaces the current setup.</p><div class="actions"><button class="btn" id="export" type="button">Export settings</button><button class="btn" id="import" type="button">Import settings</button><input id="backup" type="file" accept=".json,application/json" hidden></div><div id="settingsFeedback" class="feedback" role="status"></div></section>
+    <section class="setting-group"><h3>Import and export</h3><p>Export saves your links and layout in a readable JSON file. Keep it private. Import backups you trust, since they replace your current setup.</p><div class="actions"><button class="btn" id="export" type="button">Export settings</button><button class="btn" id="import" type="button">Import settings</button><input id="backup" type="file" accept=".json,application/json" hidden></div><div id="settingsFeedback" class="feedback" role="status"></div></section>
+  </div>
+</dialog>
+<dialog id="policy" aria-labelledby="policyTitle">
+  <div class="dialog-head">
+    <h2 id="policyTitle">Terms, privacy &amp; safety</h2>
+    <button type="button" class="icon-btn" data-close aria-label="Close" autofocus><span data-icon="close"></span></button>
+  </div>
+  <div class="dialog-body policy">
+    <section>
+      <h3>Independent project</h3>
+      <p>Crew Deck is a personal bookmark launcher created independently of Brussels Airlines and Lufthansa Group. Airline and product names identify the tools referenced by the starter shortcuts. Use official company systems and instructions for operational, safety, reporting, and emergency procedures.</p>
+    </section>
+    <section>
+      <h3>Terms of use</h3>
+      <p>Use Crew Deck only where your employer or device administrator permits it. Use only systems you are authorized to access, and follow applicable laws, company policies, and the terms of each linked service. Keep passwords, access tokens, passenger information, employee records, reports, and other confidential data out of saved links and backups.</p>
+    </section>
+    <section>
+      <h3>Links and phishing</h3>
+      <p>The starter shortcuts contain placeholders. Crew Deck checks URL format and blocks certain schemes, including script URLs. Website ownership, phishing reputation, and redirects are unchecked. Verify the exact destination against an official source before signing in or submitting information. An imported backup can replace the destination of a familiar shortcut.</p>
+    </section>
+    <section>
+      <h3>Privacy and backups</h3>
+      <p>Crew Deck keeps your shortcuts and settings in your browser and uses no account, application server, or analytics. Exports are unencrypted JSON files that include full saved URLs. Clear this site's data in your browser to remove the saved copy, and delete any exported backups separately.</p>
+      <p>GitHub hosts the public app and may process standard request information, such as IP addresses, under its privacy statement. Linked services handle their own data and requests. <a href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement" target="_blank" rel="noopener noreferrer">GitHub Privacy Statement</a></p>
+    </section>
+    <section>
+      <h3>Disclaimer and liability</h3>
+      <p>Crew Deck is provided as is and as available. To the extent permitted by applicable law, the maintainer disclaims warranties about availability, accuracy, security, and fitness for a particular purpose, and liability for loss or damage arising from use of the launcher or linked services. Any rights or remedies that applicable law makes mandatory continue to apply.</p>
+    </section>
+    <section>
+      <h3>Report a problem</h3>
+      <p>Use GitHub Issues for general app problems. Issues are public, so leave out internal links, personal information, and security details. Follow your organization's approved reporting process for suspected phishing or corporate security incidents. <a href="https://github.com/TaiNiePooNie/personal-app-launcher/issues" target="_blank" rel="noopener noreferrer">Crew Deck issues</a></p>
+    </section>
   </div>
 </dialog>
 <div id="notice" role="status"></div>
@@ -1104,6 +1145,7 @@ $('deleteLink').addEventListener('click',() => {
   if (persisted) notice('Link deleted.');
 });
 $('addLink').addEventListener('click',() => editLink());
+$('openPolicy').addEventListener('click',() => $('policy').showModal());
 $('search').addEventListener('input',renderGroups);
 document.querySelectorAll('[data-icon]').forEach(node => { node.innerHTML = svg(node.dataset.icon); });
 document.querySelectorAll('[data-close]').forEach(button => button.addEventListener('click',() => button.closest('dialog').close()));
